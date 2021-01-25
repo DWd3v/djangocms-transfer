@@ -21,6 +21,9 @@ def _object_version_data_hook(data, for_page=False):
             slot=data['placeholder'],
             plugins=data['plugins'],
         )
+    
+    if 'pk' not in data:
+    	return data
 
     if 'plugin_type' in data:
         return ArchivedPlugin(**data)
