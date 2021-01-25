@@ -1,4 +1,5 @@
 import json
+from django.core.exceptions import FieldError
 
 from django import forms
 from django.conf import settings
@@ -21,7 +22,7 @@ def _object_version_data_hook(data, for_page=False):
             slot=data['placeholder'],
             plugins=data['plugins'],
         )
-    
+
     if 'pk' not in data:
     	return data
 
@@ -83,7 +84,10 @@ class ExportImportForm(forms.Form):
 
         if plugin:
             plugin_model = plugin.get_plugin_class().model
-            plugin_is_bound = plugin_model.objects.filter(cmsplugin_ptr=plugin).exists()
+            try:
+                plugin_is_bound = plugin_model.objects.filter(cmsplugin_ptr=plugin).exists()
+            except FieldError:
+                plugin_is_bound = True
         else:
             plugin_is_bound = False
 
